@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBreak - Beranda Ice Breaking</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #12121f; color: white; text-align: center; margin: 0; padding: 40px 20px; }
+        .container { max-width: 900px; margin: auto; }
+        
+        .hero-box { background: #1f1f35; padding: 30px; border-radius: 16px; border: 2px solid #00d2ff; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(0, 210, 255, 0.15); }
+        input { padding: 12px; border-radius: 8px; border: none; width: 220px; text-align: center; font-size: 16px; margin: 5px; }
+        
+        .room-actions { margin-top: 15px; }
+        button { background: #00d2ff; color: #12121f; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin: 5px; transition: 0.2s; }
+        button:hover { background: #00a8cc; transform: scale(1.03); }
+        
+        /* Grid Pilihan 4 Game */
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .game-card { background: #1f1f35; padding: 25px 20px; border-radius: 14px; border: 2px solid #2d2d4d; transition: 0.3s; text-align: left; }
+        .game-card:hover { transform: translateY(-5px); border-color: #00d2ff; }
+        .game-card h3 { margin-top: 0; color: #00d2ff; }
+        .game-card p { font-size: 14px; color: #a4b0be; }
+        
+        #infoStatus { margin-top: 15px; font-weight: bold; color: #2ed573; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🚀 EduBreak: Platform Ice Breaking Kelas</h1>
+        <p>Bikin suasana kelas hidup kembali dengan game edukasi interaktif!</p>
+
+        <!-- Kotak Masuk Ruangan / Atur Ruangan -->
+        <div class="hero-box">
+            <h2>Masuk ke Ruangan Game</h2>
+            <p>Masukkan nama dan kode ruangan yang diberikan oleh guru.</p>
+            <div>
+                <input type="text" id="inputNama" placeholder="Nama Lengkap Siswa">
+                <input type="text" id="inputKode" placeholder="Kode Ruangan (Cth: 849201)">
+            </div>
+            <div class="room-actions">
+                <button onclick="simpanSesiSiswa()">Simpan Identitas & Siap Main</button>
+                <button onclick="buatRuanganGuru()" style="background: #ffa502;">Buat Ruangan (Mode Guru)</button>
+            </div>
+            <p id="infoStatus"></p>
+        </div>
+
+        <!-- Daftar 4 Game Edukasi -->
+        <h2>Pilih Game Edukasi</h2>
+        <div class="game-grid">
+            <!-- Game 1: Tower of Quiz -->
+            <div class="game-card">
+                <h3>🏰 Tower of Quiz</h3>
+                <p>Jawab soal dengan benar, kumpulkan poin lompatan, dan capai puncak menara!</p>
+                <button onclick="pilihGame('games/tower-of-quiz.html')">Mainkan Game 1</button>
+            </div>
+
+            <!-- Game 2 (Placeholder) -->
+            <div class="game-card" style="opacity: 0.5;">
+                <h3>🎯 Game 2</h3>
+                <p>Segera hadir dalam pembaruan berikutnya.</p>
+                <button disabled style="background: #57606f; cursor: not-allowed;">Terkunci</button>
+            </div>
+
+            <!-- Game 3 (Placeholder) -->
+            <div class="game-card" style="opacity: 0.5;">
+                <h3>🧩 Game 3</h3>
+                <p>Segera hadir dalam pembaruan berikutnya.</p>
+                <button disabled style="background: #57606f; cursor: not-allowed;">Terkunci</button>
+            </div>
+
+            <!-- Game 4 (Placeholder) -->
+            <div class="game-card" style="opacity: 0.5;">
+                <h3>⚡ Game 4</h3>
+                <p>Segera hadir dalam pembaruan berikutnya.</p>
+                <button disabled style="background: #57606f; cursor: not-allowed;">Terkunci</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Guru membuat kode acak ruangan (seperti Quizizz)
+        function buatRuanganGuru() {
+            const kodeAcak = Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('kodeRuanganAktif', kodeAcak);
+            localStorage.setItem('roleGuru', 'true');
+            document.getElementById('inputKode').value = kodeAcak;
+            document.getElementById('infoStatus').innerText = `✅ Ruangan berhasil dibuat! Berikan kode ${kodeAcak} ke siswa.`;
+        }
+
+        // Siswa menyimpan nama dan kode ruangan sebelum masuk game
+        function simpanSesiSiswa() {
+            const nama = document.getElementById('inputNama').value.trim();
+            const kode = document.getElementById('inputKode').value.trim();
+
+            if (!nama || !kode) {
+                alert("Harap isi Nama dan Kode Ruangan terlebih dahulu!");
+                return;
+            }
+
+            localStorage.setItem('namaPemain', nama);
+            localStorage.setItem('kodeRuanganAktif', kode);
+            localStorage.removeItem('roleGuru');
+            document.getElementById('infoStatus').innerText = `✨ Halo ${nama}, kamu berhasil terhubung ke ruangan ${kode}! Silakan klik tombol "Mainkan Game 1".`;
+        }
+
+        // Validasi sebelum masuk ke file game
+        function pilihanGame(urlGame) {
+            const kode = localStorage.getItem('kodeRuanganAktif');
+            const nama = localStorage.getItem('namaPemain');
+
+            if (!kode || !nama) {
+                alert("⚠️ Ups! Kamu harus mengisi Nama dan Kode Ruangan di atas terlebih dahulu sebelum masuk ke ruangan game.");
+                return;
+            }
+
+            // Jika sudah lengkap, arahkan ke file game yang dituju
+            window.location.href = urlGame;
+        }
+    </script>
+</body>
+</html>
